@@ -33,7 +33,7 @@ I'll use an Ubuntu Linux system to host PocketBeagle. I call this machine MacBun
 
 #### run `ifconfig`on MacBuntu:
 
-`ifconfig` (or equivalently `ip a`) reveals that connecting the PocketBeagle has added two (2) new interfaces on MacBuntu.
+`ifconfig` (or [equivalently `ip a`](https://www.tecmint.com/ifconfig-vs-ip-command-comparing-network-configuration/)) reveals that connecting the PocketBeagle has added two (2) new interfaces on MacBuntu.
 
 
 ```bash
