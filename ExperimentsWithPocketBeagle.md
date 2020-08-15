@@ -205,7 +205,85 @@ debian@beaglebone:~$
 
 ### Conclusion of Network setup & preliminaries :
 
-We have concluded the required configuration changes to integrate the PocketBeagle with the LAN, and provide Internet access. At this point, while PocketBeagle remains on its own subnet, it is fully connected.
+We have concluded the required configuration changes to integrate the PocketBeagle with the LAN, and provide Internet access. At this point, while PocketBeagle remains on its own subnet, it is fully connected. Having network connectivity allows use of Debian's [*Advanced Package Tool*](https://wiki.debian.org/AptCLI)  `apt`  to manage software on  *pocketbeagle*: 
+
+```bash
+debian@beaglebone:~$ sudo apt-get update
+...		# this will take some time ...
+Fetched 2,005 kB in 1min 34s (21.3 kB/s)                                                                                    
+Reading package lists... Done
+
+debian@beaglebone:~$ sudo apt-get upgrade
+...
+The following packages have been kept back:
+  c9-core-installer libnode-dev libnode64 nodejs
+The following packages will be upgraded:
+  bb-cape-overlays bb-customizations bb-node-red-installer bb-wl18xx-firmware libjson-c3 ti-pru-cgt-installer
+6 upgraded, 0 newly installed, 0 to remove and 4 not upgraded.
+Need to get 42.6 MB of archives.
+After this operation, 133 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y 
+
+...		# again, this will take some time ... 
+
+debian@beaglebone:~$
+
+# It's often a good idea to reboot the system after an upgrade 
+# To avoid manually creating the default gateway entry, 
+# Place that in a script to be executed by `cron` @reboot.
+# Use root's crontab for this as adding a route requires su privileges;
+# i.e. `sudo route add default gw 192.168.6.1`
+
+debian@beaglebone:~$ sudo crontab -e
+
+# Use the editor to add this line:
+
+@reboot (sleep 20; /home/debian/share-net.sh) >> /home/debian/cronlog 2>&1
+
+# I use a sript file instead of the route command directly, tho' either will work
+# Save & exit the editor
+# Reopen the editor to create ~/share-net.sh
+# Add the following: 
+
+#!/bin/bash
+# option 1: add static routes:
+/sbin/route add -net 0.0.0.0 gw 192.168.6.1
+# /sbin/route add -net 0.0.0.0 gw 192.168.7.1
+# /sbin/dhclient -r usb1 # name resolution?
+
+# Save & exit the editor
+
+debian@beaglebone:~$ chmod 755 ~/share-net.sh
+debian@beaglebone:~$ sudo reboot
+
+```
+
+
+
+
+
+## Hello World with Blinky Lights
+
+Browsing the API documentation at http://192.168.6.2/ide.html, the file `blinkLED.c` suggests itself as a place to begin. Reviewing the C source leads to this `bash` script: 
+
+```bash
+#!/bin/bash
+# Flash light using an infinite while loop; hit [CTRL+C] to stop!
+
+LEDFILE=/sys/devices/platform/leds/leds/beaglebone:green:usr3/brightness
+
+while :
+do
+   echo "1" > $LEDFILE
+   sleep 0.25
+   echo "0" > $LEDFILE
+   sleep 0.25
+done
+```
+
+Which duly flashes the `usr3` LED on & off until the program is halted.
+
+
 
 
 
