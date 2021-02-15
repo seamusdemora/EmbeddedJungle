@@ -285,6 +285,12 @@ Which duly flashes the `usr3` LED on & off until the program is halted.
 
 
 
+---
+
+## REFERENCES, CREDITS, ETC. 
+
+1. Many thanks to [James Golovich](https://github.com/jamesgol/) for his [help](https://www.reddit.com/r/OPNsenseFirewall/comments/i299wa/how_to_get_internet_access_through_opnsense_from/g050nmr/?context=3) in unraveling the [OPNsense firewall](https://opnsense.org/) arcanery. 
+
 
 
 ---
